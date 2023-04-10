@@ -1,4 +1,4 @@
-package com.skye.srms_backend_old;
+package com.skye.srms_backend;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
