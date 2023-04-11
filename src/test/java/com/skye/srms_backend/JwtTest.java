@@ -1,6 +1,6 @@
 package com.skye.srms_backend;
 
-import com.skye.srms_backend.common.utils.Jwt;
+import com.skye.srms_backend.utils.Jwt;
 import com.skye.srms_backend.entity.User;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;

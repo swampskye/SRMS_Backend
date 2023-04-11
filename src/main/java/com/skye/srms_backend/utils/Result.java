@@ -1,10 +1,8 @@
-package com.skye.srms_backend.common;
+package com.skye.srms_backend.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor

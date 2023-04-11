@@ -1,10 +1,11 @@
-package com.skye.srms_backend.common.utils;
+package com.skye.srms_backend.utils;
 
 import com.alibaba.fastjson2.JSON;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+@Slf4j
 @Component
 public class Jwt {
 
@@ -34,6 +36,7 @@ public class Jwt {
                 .setIssuedAt(new Date(currentTime))
                 .signWith(SignatureAlgorithm.HS256, encodeSecret(JWT_KEY))
                 .setExpiration(new Date(expireTime));
+        log.debug("in jwt ---------------builder.compact()"+builder.compact());
         return builder.compact();
     }
 
@@ -47,6 +50,7 @@ public class Jwt {
 
 
     public <T> T parseToken(String token, Class<T> tClass){
+        log.debug("in jwt parseToken --------------- token:"+token);
         Claims body = Jwts.parser()
                 .setSigningKey(encodeSecret(JWT_KEY))
                 .parseClaimsJws(token)
