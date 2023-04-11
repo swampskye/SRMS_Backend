@@ -46,6 +46,7 @@ public class UserController {
     @PostMapping("/signup")
     public Result<?> adduser(@RequestBody User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        User signupUser = new User();
         try {
             userService.save(user);
         } catch (Exception e) {
@@ -67,8 +68,7 @@ public class UserController {
 
 
     @GetMapping("/info")
-//    public Result<Map<String, Object>> getUserInfo(@RequestBody String token){
-    public Result<Map<String, Object>> getUserInfo(@RequestParam(value = "token") String token){
+    public Result<Map<String, Object>> getUserInfo(@RequestParam(name = "token") String token){
         log.debug("in serviceImpl----------------"+token);
         Map<String, Object> userInfo = userService.getUserInfo(token);
         if (userInfo != null){

@@ -21,7 +21,9 @@ public class MyInterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/user/signin",
                         "/user/signup",
-                        "/user/signout"
+                        "/user/signout",
+                        "/user/all",
+                        "/user/info"
                 );
     }
 }
