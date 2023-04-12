@@ -1,6 +1,7 @@
 package com.skye.srms_backend.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -26,6 +27,9 @@ public class User implements Serializable {
     private String username;
 
     private String password;
+
+    @TableField(exist = false)
+    private String r_password;
 
     private String phone;
 
@@ -61,6 +65,14 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getR_password() {
+        return r_password;
+    }
+
+    public void setR_password(String r_password) {
+        this.r_password = r_password;
     }
 
     public String getPhone() {

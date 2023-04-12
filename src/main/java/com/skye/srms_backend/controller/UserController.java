@@ -1,5 +1,6 @@
 package com.skye.srms_backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.skye.srms_backend.utils.Result;
 
 import com.skye.srms_backend.utils.Jwt;
@@ -45,13 +46,19 @@ public class UserController {
 
     @PostMapping("/signup")
     public Result<?> adduser(@RequestBody User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        User signupUser = new User();
-        try {
-            userService.save(user);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+//    public Result<?> adduser(@RequestBody User user){
+        log.debug(user.toString());
+
+//        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+//        wrapper.eq(User::getUsername, user.getUsername());
+//
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+////        User signupUser = new User();
+//        try {
+//            userService.save(user);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         return Result.success("sign up successfully");
     }
 
