@@ -17,18 +17,20 @@ public class JwtValidateInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.debug(request.getRequestURL()+"--------------need check");
+        log.debug(request.getRequestURL()+" --------------need check");
+//        String token = request.getHeader("token");
         String token = request.getHeader("token");
+        log.debug("-**************************token:"+token);
         if (token != null){
             try {
                 jwt.parseToken(token);
-                log.debug(request.getRequestURL()+"-----------check passed");
+                log.debug(request.getRequestURL()+" -----------check passed");
                 return true;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        log.debug(request.getRequestURL()+"--------------check failed");
+        log.debug(request.getRequestURL()+" --------------check failed");
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(JSON.toJSONString(Result.fail("jwt is invalid")));
         return false;

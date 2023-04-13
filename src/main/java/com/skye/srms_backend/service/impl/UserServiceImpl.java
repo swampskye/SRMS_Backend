@@ -71,15 +71,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new RuntimeException(e);
         }
 
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUsername, user.getUsername());
+        user = this.baseMapper.selectOne(wrapper);
+
         Map<String, Object> data = new HashMap<>();
         data.put("id", user.getId());
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
         data.put("phone", user.getPhone());
-        data.put("is_admin", user.getIsAdmin());
-        data.put("is_active", user.getIsActive());
-        data.put("short_intro", user.getShortIntro());
+        data.put("isAdmin", user.getIsAdmin());
+        data.put("isActive", user.getIsActive());
+        data.put("shortIntro", user.getShortIntro());
         data.put("img", user.getImg());
+//        log.debug("****************data:"+data.toString());
+//        log.debug("****************user:"+user.toString());
+
 
         return data;
     }
@@ -91,7 +98,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         queryWrapper.exists("select * from user where username = '"+user.getUsername()+"' or email = '"+user.getEmail()+"' or phone = '"+user.getPhone()+"'");
         List<User> userList = this.baseMapper.selectList(queryWrapper);
 
-        if (userList.size() != 0){
+        if (userList.size() != 0 || user.getPassword() == null){
             log.debug("-------------addUser != null");
             log.debug(userList.toString());
             log.debug("-------------return false1");
@@ -118,12 +125,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Map<String, Object> updateUserInfo(User user) {
 
         log.debug("-----------user which need to be updated:"+user.toString());
-
+//        this.save(user);
+//        user.setPassword(null);
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, user.getUsername());
         int update = this.baseMapper.update(user,wrapper);
+        User updatedUser = this.baseMapper.selectOne(wrapper);
         Map<String, Object> data = new HashMap<>();
-        data.put("user", user);
+        data.put("user", updatedUser);
         return data;
 
     }

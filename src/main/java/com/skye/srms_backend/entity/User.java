@@ -32,7 +32,7 @@ public class User implements Serializable {
     @Length(min = 3, max = 20, message = "username must between 3 and 20 characters")
     private String username;
 
-    @NotBlank(message = "phone number can not be null")
+//    @NotBlank(message = "password can not be null")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "password must contain at least 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number")
     private String password;
     @NotBlank(message = "phone number can not be null")

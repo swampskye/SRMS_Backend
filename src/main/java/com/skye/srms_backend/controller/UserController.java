@@ -84,14 +84,13 @@ public class UserController {
 
 
     @PutMapping("/update")
-    public Result<Map<String, Object>> updateUserInfo(@RequestBody User user){
+    public Result<Map<String, Object>> updateUserInfo(@Validated  @RequestBody User user){
         Map<String, Object> updatedUserInfo = userService.updateUserInfo(user);
 
         if (updatedUserInfo != null){
             return Result.success(updatedUserInfo, "update successfully");
         }
         return Result.success("update failed");
-
     }
 
 }
