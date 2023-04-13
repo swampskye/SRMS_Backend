@@ -17,4 +17,8 @@ public interface IUserService extends IService<User> {
 
     Map<String, Object> signin(User user);
     Map<String, Object> getUserInfo(String token);
+
+    boolean addUser(User user);
+
+    Map<String, Object> updateUserInfo(User user);
 }

@@ -10,6 +10,8 @@ import com.skye.srms_backend.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,21 +47,17 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    public Result<?> adduser(@RequestBody User user){
-//    public Result<?> adduser(@RequestBody User user){
-        log.debug(user.toString());
+    public Result<?> signup(@Validated @RequestBody User user, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            String failedMsg = bindingResult.getFieldError().getDefaultMessage();
+            return Result.fail(failedMsg);
+        }
+        boolean b = userService.addUser(user);
 
-//        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-//        wrapper.eq(User::getUsername, user.getUsername());
-//
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-////        User signupUser = new User();
-//        try {
-//            userService.save(user);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-        return Result.success("sign up successfully");
+        if (b){
+            return Result.success("sign up successfully");
+        }
+        return Result.fail("sign up failed");
     }
 
 
@@ -82,6 +80,18 @@ public class UserController {
             return Result.success(userInfo,"get user info successful!");
         }
         return Result.fail("fail to get user info ");
+    }
+
+
+    @PutMapping("/update")
+    public Result<Map<String, Object>> updateUserInfo(@RequestBody User user){
+        Map<String, Object> updatedUserInfo = userService.updateUserInfo(user);
+
+        if (updatedUserInfo != null){
+            return Result.success(updatedUserInfo, "update successfully");
+        }
+        return Result.success("update failed");
+
     }
 
 }

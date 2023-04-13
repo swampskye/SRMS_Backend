@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 /**
@@ -24,15 +28,19 @@ public class User implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_UUID)
     private String id;
 
+    @NotBlank(message = "username can not be null")
+    @Length(min = 3, max = 20, message = "username must between 3 and 20 characters")
     private String username;
 
+    @NotBlank(message = "phone number can not be null")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = "password must contain at least 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number")
     private String password;
-
-    @TableField(exist = false)
-    private String r_password;
-
+    @NotBlank(message = "phone number can not be null")
+    @Pattern(regexp = "^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[89]))\\d{8})$", message = "invalid phone number")
     private String phone;
 
+    @NotBlank(message = "Email address can not be null")
+    @Email(message = "invalid Email address")
     private String email;
 
     private Boolean isActive;
@@ -67,13 +75,6 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getR_password() {
-        return r_password;
-    }
-
-    public void setR_password(String r_password) {
-        this.r_password = r_password;
-    }
 
     public String getPhone() {
         return phone;
