@@ -25,4 +25,6 @@ public interface IServerService extends IService<Server> {
     List<Server> getFailedServer();
 
     Server getServerInfo(String serverIndex);
+
+    boolean update(Server server);
 }

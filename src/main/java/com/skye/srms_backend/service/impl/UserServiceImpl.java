@@ -130,9 +130,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, user.getUsername());
         int update = this.baseMapper.update(user,wrapper);
-        User updatedUser = this.baseMapper.selectOne(wrapper);
         Map<String, Object> data = new HashMap<>();
-        data.put("user", updatedUser);
+        data.put("user", user);
         return data;
 
     }

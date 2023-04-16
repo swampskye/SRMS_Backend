@@ -62,5 +62,39 @@ public class ServerController {
     }
 
 
+    @PutMapping("/update")
+    public Result<?> updateServer(@RequestBody Server server){
+        boolean updated = serverService.update(server);
+        if (updated){
+            return Result.success("server details updated successfully");
+        }
+        return Result.fail("server details updated failed");
+    }
+
+
+    @PutMapping("/upfixid")
+    public Result<?> updateFixId(@RequestBody Map map){
+//    public Result<?> updateFixId(@RequestBody String fixId, @RequestBody String serverIndex){
+        Server server = new Server();
+//        server.setFixId(fixId);
+//        server.setServerIndex(serverIndex);
+
+        server.setFixId(map.get("fixId").toString());
+        server.setServerIndex(map.get("serverIndex").toString());
+
+        log.debug("@@@@@@@@@@@@@@@@@@@:"+server.toString());
+        boolean updated = serverService.update(server);
+        if (updated){
+            return Result.success("server fix info updated successfully");
+        }
+        return Result.fail("server fix info  updated failed");
+    }
+
+
+
+
+
+
+
 
 }

@@ -71,4 +71,17 @@ public class ServerServiceImpl extends ServiceImpl<ServerMapper, Server> impleme
         }
         return null;
     }
+
+    @Override
+    public boolean update(Server server) {
+
+        LambdaQueryWrapper<Server> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Server::getServerIndex, server.getServerIndex());
+        int update = this.baseMapper.update(server, lambdaQueryWrapper);
+
+        if (update != 0){
+            return true;
+        }
+        return false;
+    }
 }
