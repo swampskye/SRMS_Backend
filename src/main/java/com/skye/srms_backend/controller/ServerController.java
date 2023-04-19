@@ -53,6 +53,14 @@ public class ServerController {
         return Result.success(list);
     }
 
+
+    @GetMapping("/issued")
+    public Result<List<Server>> getIssued() {
+        List<Server> list = serverService.getIssuedServer();
+        log.debug("#####################issued serverList:"+list);
+        return Result.success(list);
+    }
+
     @PostMapping("/add")
     public Result<?> addServer(@RequestBody Server server) {
         if(serverService.add(server)){
@@ -64,6 +72,9 @@ public class ServerController {
 
     @PutMapping("/update")
     public Result<?> updateServer(@RequestBody Server server){
+
+        log.debug("$$$$$$$$$$$before update server0:"+server.toString());
+
         boolean updated = serverService.update(server);
         if (updated){
             return Result.success("server details updated successfully");
@@ -74,16 +85,12 @@ public class ServerController {
 
     @PutMapping("/upfixid")
     public Result<?> updateFixId(@RequestBody Map map){
-//    public Result<?> updateFixId(@RequestBody String fixId, @RequestBody String serverIndex){
-        Server server = new Server();
-//        server.setFixId(fixId);
-//        server.setServerIndex(serverIndex);
-
-        server.setFixId(map.get("fixId").toString());
-        server.setServerIndex(map.get("serverIndex").toString());
-
-        log.debug("@@@@@@@@@@@@@@@@@@@:"+server.toString());
-        boolean updated = serverService.update(server);
+//        Server server = new Server();
+//        server.setFixId(map.get("fixId").toString());
+//        server.setServerIndex(map.get("serverIndex").toString());
+//        log.debug("@@@@@@@@@@@@@@@@@@@:"+server.toString());
+//        boolean updated = serverService.update(server);
+        boolean updated = serverService.updateFix(map.get("fixId").toString(),map.get("serverIndex").toString());
         if (updated){
             return Result.success("server fix info updated successfully");
         }

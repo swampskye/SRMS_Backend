@@ -1,9 +1,8 @@
 package com.skye.srms_backend.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -25,10 +24,12 @@ public class Server implements Serializable {
 
     private String serverIndex;
 
+//    @NotNull
     private Boolean isWorking;
 
     private String descriptions;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String fixId;
 
     private LocalDateTime createdDate;

@@ -25,7 +25,6 @@ public class FixInfoServiceImpl extends ServiceImpl<FixInfoMapper, FixInfo> impl
 
     @Override
     public FixInfo addFixInfo(FixInfo fixInfo) {
-
         log.debug("fixInfo before insert============"+fixInfo);
         fixInfo.setCreatedDate(LocalDateTime.now());
         this.baseMapper.insert(fixInfo);

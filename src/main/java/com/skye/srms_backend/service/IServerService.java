@@ -27,4 +27,8 @@ public interface IServerService extends IService<Server> {
     Server getServerInfo(String serverIndex);
 
     boolean update(Server server);
+
+    List<Server> getIssuedServer();
+
+    boolean updateFix(String fixId, String serverIndex);
 }
