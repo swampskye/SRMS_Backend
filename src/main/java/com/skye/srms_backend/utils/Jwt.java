@@ -20,7 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Component
 public class Jwt {
 
-    private static final long JWT_EXPIRE = 30 * 60 * 1000L;
+    private static final long JWT_EXPIRE = 30 * 60 * 1000;
 
     private static final String JWT_KEY = "skye";
 

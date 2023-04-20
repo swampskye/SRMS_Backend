@@ -2,6 +2,7 @@ package com.skye.srms_backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.skye.srms_backend.entity.FixInfo;
+import com.skye.srms_backend.entity.Server;
 import com.skye.srms_backend.entity.User;
 import com.skye.srms_backend.mapper.FixInfoMapper;
 import com.skye.srms_backend.service.IFixInfoService;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -30,5 +32,13 @@ public class FixInfoServiceImpl extends ServiceImpl<FixInfoMapper, FixInfo> impl
         this.baseMapper.insert(fixInfo);
         log.debug("fixInfo after insert============="+fixInfo);
         return fixInfo;
+    }
+
+    @Override
+    public List<FixInfo> getFixInfoListOrderByAscOnName() {
+        LambdaQueryWrapper<FixInfo> lambdaQueryWrapper = new LambdaQueryWrapper<FixInfo>();
+        lambdaQueryWrapper.orderByDesc(FixInfo::getCreatedDate);
+        List<FixInfo> fixInfoList = this.baseMapper.selectList(lambdaQueryWrapper);
+        return fixInfoList;
     }
 }

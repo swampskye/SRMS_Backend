@@ -22,7 +22,7 @@ public class MyInterceptorConfig implements WebMvcConfigurer {
                         "/user/signin",
                         "/user/signup",
                         "/user/signout",
-                        "/user/all",
+//                        "/user/all",
                         "/user/info"
                 );
     }

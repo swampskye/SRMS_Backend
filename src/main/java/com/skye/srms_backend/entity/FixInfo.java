@@ -30,7 +30,7 @@ public class FixInfo implements Serializable {
     @NotBlank(message = "Sender can not be null")
     private String sender;
 
-    private Integer fixer;
+    private String fixer;
 
     @NotBlank(message = "Fix Status can not be null")
     private String fixStatus;
@@ -42,13 +42,13 @@ public class FixInfo implements Serializable {
     public FixInfo() {
     }
 
-    public FixInfo(String id, String serverIndex, String sender, Integer fixer, LocalDateTime createdDate, String fixStatus, String info) {
+    public FixInfo(String id, String serverIndex, String sender, String fixer, String fixStatus, LocalDateTime createdDate, String info) {
         this.id = id;
         this.serverIndex = serverIndex;
         this.sender = sender;
         this.fixer = fixer;
-        this.createdDate = createdDate;
         this.fixStatus = fixStatus;
+        this.createdDate = createdDate;
         this.info = info;
     }
 
@@ -77,11 +77,11 @@ public class FixInfo implements Serializable {
         this.sender = sender;
     }
 
-    public Integer getFixer() {
+    public String getFixer() {
         return fixer;
     }
 
-    public void setFixer(Integer fixer) {
+    public void setFixer(String fixer) {
         this.fixer = fixer;
     }
 

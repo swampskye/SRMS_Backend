@@ -1,21 +1,17 @@
 package com.skye.srms_backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.skye.srms_backend.entity.FixInfo;
 import com.skye.srms_backend.entity.Server;
 import com.skye.srms_backend.mapper.ServerMapper;
 import com.skye.srms_backend.service.IServerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.skye.srms_backend.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-
-import static java.sql.JDBCType.NULL;
 
 /**
  * <p>
@@ -32,6 +28,9 @@ public class ServerServiceImpl extends ServiceImpl<ServerMapper, Server> impleme
 
 //    @Autowired
 //    private SimpleMapper simpleMapper;
+
+    @Autowired
+    private FixInfoServiceImpl fixInfoService;
 
     @Override
     public boolean add(Server server) {
@@ -94,12 +93,34 @@ public class ServerServiceImpl extends ServiceImpl<ServerMapper, Server> impleme
     }
 
     @Override
-    public boolean update(Server server) {
+    public boolean update(Server server, String username) {
         log.debug("$$$$$$$$$$$updated server1:"+server.toString());
 
-        if (server.getIsWorking()){
+
+
+
+        // true -> false   should not set fixinfo to null
+        if (!server.getIsWorking()){
+
+
+            FixInfo fixInfo = new FixInfo();
+            fixInfo.setId(server.getFixId());
+            fixInfo.setFixer(username);
+
+
+
+            LambdaQueryWrapper<FixInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(FixInfo::getId, fixInfo.getId());
+//            lambdaQueryWrapper.setEntity(fixInfo);
+//            fixInfoService.update(lambdaQueryWrapper);
+//            FixInfoServiceImpl
+            fixInfoService.getBaseMapper().update(fixInfo, lambdaQueryWrapper);
+        }else{
+            // false -> true   should  set fixinfo to null
             server.setFixId(null);
         }
+
+
         log.debug("$$$$$$$$$$$updated server2:"+server.toString());
 
         LambdaQueryWrapper<Server> lambdaQueryWrapper = new LambdaQueryWrapper<>();
