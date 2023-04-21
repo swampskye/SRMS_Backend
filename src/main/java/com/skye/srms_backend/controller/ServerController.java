@@ -91,20 +91,13 @@ public class ServerController {
 
 //        Server server = new Server();
         log.debug(map.toString());
-
         Server server = serverService.getServerInfo(map.get("serverIndex").toString());
-
         log.debug("$$$$$$$$$$$before update server0:" + server.toString());
 
         server.setIsWorking(map.get("isWorking").toString() == "true"?true:false);
         server.setDescriptions(map.get("descriptions").toString());
 
-
-
         String username = map.get("username").toString();
-
-
-
         log.debug("$$$$$$$$$$$before update server0:" + server.toString());
 
 

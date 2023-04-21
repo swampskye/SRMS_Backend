@@ -37,18 +37,21 @@ public class FixInfo implements Serializable {
 
     private LocalDateTime createdDate;
 
+    private LocalDateTime fixDate;
+
     private String info;
 
     public FixInfo() {
     }
 
-    public FixInfo(String id, String serverIndex, String sender, String fixer, String fixStatus, LocalDateTime createdDate, String info) {
+    public FixInfo(String id, String serverIndex, String sender, String fixer, String fixStatus, LocalDateTime createdDate, LocalDateTime fixDate, String info) {
         this.id = id;
         this.serverIndex = serverIndex;
         this.sender = sender;
         this.fixer = fixer;
         this.fixStatus = fixStatus;
         this.createdDate = createdDate;
+        this.fixDate = fixDate;
         this.info = info;
     }
 
@@ -91,6 +94,14 @@ public class FixInfo implements Serializable {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getFixDate() {
+        return fixDate;
+    }
+
+    public void setFixDate(LocalDateTime fixDate) {
+        this.fixDate = fixDate;
     }
 
     public String getFixStatus() {

@@ -97,27 +97,42 @@ public class ServerServiceImpl extends ServiceImpl<ServerMapper, Server> impleme
         log.debug("$$$$$$$$$$$updated server1:"+server.toString());
 
 
+//        FixInfo fixInfo = new FixInfo();
+//        fixInfo.setId(server.getFixId());
+//
+//
+//        // true -> false   should not set fixinfo to null
+//        if (!server.getIsWorking()){
+//
+//        }else{
+//            // false -> true   should  set fixinfo to null
+//            server.setFixId(null);
+//            fixInfo.setFixer(username);
+//            fixInfo.setFixDate(LocalDateTime.now());
+//            LambdaQueryWrapper<FixInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+//            lambdaQueryWrapper.eq(FixInfo::getId, fixInfo.getId());
+//            fixInfoService.getBaseMapper().update(fixInfo, lambdaQueryWrapper);
+//        }
 
 
-        // true -> false   should not set fixinfo to null
-        if (!server.getIsWorking()){
+
+        //true -> false , fixinfo need no change
 
 
+        // false -> true
+        // should
+        // 1. set fixId filed in server to null
+        // 2. set fixer filed in fixInfo to username
+        // 3. set fixDate filed in fixInfo to now
+        if (server.getIsWorking()){
             FixInfo fixInfo = new FixInfo();
             fixInfo.setId(server.getFixId());
+            server.setFixId(null);
             fixInfo.setFixer(username);
-
-
-
+            fixInfo.setFixDate(LocalDateTime.now());
             LambdaQueryWrapper<FixInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(FixInfo::getId, fixInfo.getId());
-//            lambdaQueryWrapper.setEntity(fixInfo);
-//            fixInfoService.update(lambdaQueryWrapper);
-//            FixInfoServiceImpl
             fixInfoService.getBaseMapper().update(fixInfo, lambdaQueryWrapper);
-        }else{
-            // false -> true   should  set fixinfo to null
-            server.setFixId(null);
         }
 
 
