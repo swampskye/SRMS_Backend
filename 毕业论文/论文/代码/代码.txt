@@ -1,0 +1,8 @@
+@PostMapping("/signin")
+public Result<Map<String, Object>> signin(@RequestBody User user) {
+    Map<String, Object> data = userService.signin(user);
+    if (data != null){
+        return Result.success(data,"login successful!");
+    }
+    return Result.fail("login failed!");
+}

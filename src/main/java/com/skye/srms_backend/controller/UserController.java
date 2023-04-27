@@ -64,7 +64,6 @@ public class UserController {
     @PostMapping("/signin")
     public Result<Map<String, Object>> signin(@RequestBody User user) {
         Map<String, Object> data = userService.signin(user);
-        log.debug("-------in controller-------------"+user);
         if (data != null){
             return Result.success(data,"login successful!");
         }
