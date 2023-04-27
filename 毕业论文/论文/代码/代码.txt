@@ -1,3 +1,18 @@
+@PostMapping("/signup")
+public Result<?> signup(@Validated @RequestBody User user, BindingResult bindingResult){
+    if(bindingResult.hasErrors()){
+        String failedMsg = bindingResult.getFieldError().getDefaultMessage();
+        return Result.fail(failedMsg);
+    }
+    boolean b = userService.addUser(user);
+    if (b){
+        return Result.success("sign up successfully");
+    }
+    return Result.fail("sign up failed");
+}
+
+
+
 @PostMapping("/signin")
 public Result<Map<String, Object>> signin(@RequestBody User user) {
     Map<String, Object> data = userService.signin(user);
@@ -6,3 +21,423 @@ public Result<Map<String, Object>> signin(@RequestBody User user) {
     }
     return Result.fail("login failed!");
 }
+
+
+@Component
+@Slf4j
+public class JwtValidateInterceptor implements HandlerInterceptor {
+    @Autowired
+    private Jwt jwt;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.debug(request.getRequestURL()+" --------------need check");
+        String token = request.getHeader("token");
+        log.debug("-**************************token:"+token);
+        if (token != null){
+            try {
+                jwt.parseToken(token);
+                log.debug(request.getRequestURL()+" -----------check passed");
+                return true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        log.debug(request.getRequestURL()+" --------------check failed");
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().write(JSON.toJSONString(Result.fail("jwt is invalid")));
+        return false;
+    }
+}
+
+
+
+
+
+constructor(canvas: HTMLCanvasElement, modelPath: string = './models/') {
+    this.renderer = new WebGLRenderer({ canvas })
+    // this.renderer.setSize(1920, 815)
+    this.renderer.setSize(window.innerWidth, window.innerHeight * 0.941)
+    this.scene = new Scene()
+    this.scene.background = new Color("white")
+    this.camera = new PerspectiveCamera(
+        45, canvas.width / canvas.height, 0.1, 1000
+    )
+    this.camera.position.set(0, 10, 15)
+    this.camera.lookAt(0, 0, 0)
+    this.controls = new OrbitControls(
+        this.camera,
+        this.renderer.domElement
+    );
+    this.modelPath = modelPath
+
+    // 高亮图片的名称
+    this.crtTexture('cabinet-hover.jpg')
+}
+
+
+loadGLTF(modelName: string) {
+    gltfLoader.load(this.modelPath + modelName, ({ scene: { children } }) => {
+        children.forEach((obj: any) => {
+            const { map, color } = obj.material as MeshStandardMaterial;
+            this.changeMat(obj, map, color);
+            // 如果模型包含cabinet字符的话，就将其添加到机柜集合
+            if (obj.name.includes("cabinet")) {
+                this.cabinets.push(obj);
+            }
+        });
+        this.scene.add(...children)
+    })
+}
+
+
+
+
+if (!canvasEle.current) { return }
+canvasEle.current.width = window.innerWidth
+canvasEle.current.height = window.innerHeight
+room = new MachineRoom(canvasEle.current)
+room.loadGLTF('machineRoom.gltf')
+room.animate()
+//当鼠标划入机柜，显示信息面板
+room.onMouseOverCabinet = ({ name }: { name: string }) => {
+    setVisible('block')
+    axios.get('http://127.0.0.1:8080/server/info', {
+        params: { 'serverIndex': name }
+    })
+        .then(response => {
+            console.log(response.data)
+
+            let description: string = response.data.data.descriptions
+            let fixId: string = response.data.data.fixId
+
+            setState((prevState) => {
+                return Object.assign({}, prevState, { curCabinet: { name, description, fixId } })
+            })
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+
+}
+//当鼠标在机柜上移动，让信息面板随鼠标移动
+// room.onMouseMoveCabinet = (left: number, top: number) => {
+room.onMouseMoveCabinet = (left: any, top: any) => {
+
+    setState((prevState) => {
+        return Object.assign({}, prevState, { planePos: { left, top } })
+    })
+}
+//当鼠标划出机柜，隐藏信息面板
+room.onMouseOutCabinet = () => {
+    setVisible('none')
+}
+
+
+
+
+
+
+@PutMapping("/update")
+public Result<?> updateServer(@RequestBody Map map) {
+
+
+    log.debug(map.toString());
+    Server server = serverService.getServerInfo(map.get("serverIndex").toString());
+    log.debug("$$$$$$$$$$$before update server0:" + server.toString());
+
+    server.setIsWorking(map.get("isWorking").toString() == "true"?true:false);
+    server.setDescriptions(map.get("descriptions").toString());
+
+    String username = map.get("username").toString();
+    log.debug("$$$$$$$$$$$before update server1:" + server.toString());
+
+
+    boolean updated = serverService.update(server, username);
+    if (updated) {
+        return Result.success("server details updated successfully");
+    }
+    return Result.fail("server details updated failed");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@GetMapping("/info")
+public Result<Server> getServerInfo(@RequestParam String serverIndex) {
+    log.debug("-------------serverIndex:" + serverIndex);
+    Server server = serverService.getServerInfo(serverIndex);
+    return Result.success(server);
+}
+
+
+@GetMapping("/issued")
+public Result<List<Server>> getIssued() {
+    List<Server> list = serverService.getIssuedServer();
+    log.debug("#####################issued serverList:" + list);
+    return Result.success(list);
+}
+
+@GetMapping("/failed")
+public Result<List<Server>> getFailed() {
+    List<Server> list = serverService.getFailedServer();
+    log.debug("#####################failed serverList:" + list);
+    return Result.success(list);
+}
+
+
+
+
+
+
+
+
+
+
+@PostMapping("/add")
+public Result<FixInfo> createFixInfo(@Validated @RequestBody FixInfo fixInfo, BindingResult bindingResult){
+    if(bindingResult.hasErrors()){
+        String failedMsg = bindingResult.getFieldError().getDefaultMessage();
+        return Result.fail(failedMsg);
+    }
+
+    FixInfo addedFixInfo = fixInfoService.addFixInfo(fixInfo);
+
+    if (addedFixInfo != null){
+        return Result.success(addedFixInfo, "issue created successfully");
+    }
+    return Result.fail("issue created failed");
+}
+
+
+
+
+
+
+
+
+
+/**
+ *1. set fixId filed in server to null
+ *2. set fixer filed in fixInfo to username
+ *3. set fixDate filed in fixInfo to now
+ */
+if (server.getIsWorking()){
+    FixInfo fixInfo = new FixInfo();
+    fixInfo.setId(server.getFixId());
+    server.setFixId(null);
+    fixInfo.setFixer(username);
+    fixInfo.setFixDate(LocalDateTime.now());
+    LambdaQueryWrapper<FixInfo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+    lambdaQueryWrapper.eq(FixInfo::getId, fixInfo.getId());
+    fixInfoService.getBaseMapper().update(fixInfo, lambdaQueryWrapper);
+}
+
+
+log.debug("$$$$$$$$$$$updated server2:"+server.toString());
+
+LambdaQueryWrapper<Server> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+lambdaQueryWrapper.eq(Server::getServerIndex, server.getServerIndex());
+int update = this.baseMapper.update(server, lambdaQueryWrapper);
+
+
+
+
+
+
+
+
+
+
+@GetMapping("/all")
+public Result<List<User>> getAll() {
+    List<User> list = userService.list();
+    return Result.success(list);
+}
+
+
+
+
+
+
+
+
+
+
+
+@GetMapping("/info")
+public Result<Map<String, Object>> getUserInfo(@RequestParam(name = "token") String token){
+    log.debug("in serviceImpl----------------"+token);
+    Map<String, Object> userInfo = userService.getUserInfo(token);
+    if (userInfo != null){
+        return Result.success(userInfo,"get user info successful!");
+    }
+    return Result.fail("fail to get user info ");
+}
+
+
+@PutMapping("/update")
+public Result<Map<String, Object>> updateUserInfo(@Validated  @RequestBody User user){
+    Map<String, Object> updatedUserInfo = userService.updateUserInfo(user);
+
+    if (updatedUserInfo != null){
+        return Result.success(updatedUserInfo, "update successfully");
+    }
+    return Result.success("update failed");
+}
+
+
+5   系统开发与实现
+系统采用前后端分离开发模式，系统后端数据接口使用SpringBoot框架实现，前端页面使用React框架实现，使用Three.js搭配React框架实现在浏览器中3D模拟机房环境。数据存储方案使用了MySql数据库，数据接口遵循RESTful规范。
+5.1 注册登陆模块
+注册时用户需要填写用户名、手机号、电子邮件地址以密码，如图5-1所示：
+ 
+图5-1 注册界面
+填写完字段之后点击Signup按钮，前端即向后端发送包含用户注册信息的注册请求，后端收到请求后进行数据校验，数据符合要求则响应前端，并由前端进行跳转到登陆界面的操作。处理请求关键代码如下：
+@PostMapping("/signup")
+public Result<?> signup(@Validated @RequestBody User user, BindingResult bindingResult){
+    if(bindingResult.hasErrors()){
+        String failedMsg = bindingResult.getFieldError().getDefaultMessage();
+        return Result.fail(failedMsg);
+    }
+    boolean b = userService.addUser(user);
+    if (b){
+        return Result.success("sign up successfully");
+    }
+    return Result.fail("sign up failed");
+}
+登陆界面需输入用户名和密码，界面如图5-2所示：
+ 
+图5-2 登陆界面
+登陆界面需输入用户名和密码，前端即向后端发送包含用户登录字段的请求，后端收到请求后查看用户名是否存在，并对输入的密码和数据库中的加密过的密码进行匹配，成功则提示登录成功并跳转到模拟机房界面并携带登录用户的token用于之后的权限限制和控制展示页面，登录失败则提示登录失败。
+请求处理关键代码如下：
+
+登录成功之后，后端返回包含登录用户信息的token，也就是jwt，并需要在以后的所有请求中携带token，在请求进入Controller层处理之前进行验证，验证通过才能正常请求原本服务，否则返回请求失败，还用于之后的权限限制和控制展示页面。
+后端配置jwt验证的关键代码如下：
+
+5.2 机房模拟及监控模块
+机房模拟及监控模块实现了对机房的3D模拟并，在鼠标悬停到服务器上时将该服务器对应的详细信息和工作状态等展示出来，如图5-3所示：
+ 
+图5-3 机房模拟及监控模块界面
+本模块使用到了Three.js这个WebGL第三方库，将3D模型导入React框架创建的Web项目中，实现在浏览器中展示3D对象的效果。主要步骤是先建立场景，然后加载GLTF格式的3D模型，实现选中某个服务器并现实信息面板。
+建立场景的关键代码如下：
+加载GLTF模型的关键代码如下：
+loadGLTF(modelName: string) {
+    gltfLoader.load(this.modelPath + modelName, ({ scene: { children } }) => {
+        children.forEach((obj: any) => {
+            const { map, color } = obj.material as MeshStandardMaterial;
+            this.changeMat(obj, map, color);
+            // 如果模型包含cabinet字符的话，就将其添加到机柜集合
+            if (obj.name.includes("cabinet")) {
+                this.cabinets.push(obj);
+            }
+        });
+        this.scene.add(...children)
+    })
+}
+选中服务器并展示信息面板的关键代码如下：
+if (!canvasEle.current) { return }
+canvasEle.current.width = window.innerWidth
+canvasEle.current.height = window.innerHeight
+room = new MachineRoom(canvasEle.current)
+room.loadGLTF('machineRoom.gltf')
+room.animate()
+//当鼠标划入机柜，显示信息面板
+room.onMouseOverCabinet = ({ name }: { name: string }) => {
+    setVisible('block')
+    axios.get('http://127.0.0.1:8080/server/info', {
+        params: { 'serverIndex': name }
+    })
+        .then(response => {
+            console.log(response.data)
+
+            let description: string = response.data.data.descriptions
+            let fixId: string = response.data.data.fixId
+
+            setState((prevState) => {
+                return Object.assign({}, prevState, { curCabinet: { name, description, fixId } })
+            })
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+
+}
+//当鼠标在机柜上移动，让信息面板随鼠标移动
+// room.onMouseMoveCabinet = (left: number, top: number) => {
+room.onMouseMoveCabinet = (left: any, top: any) => {
+
+    setState((prevState) => {
+        return Object.assign({}, prevState, { planePos: { left, top } })
+    })
+}
+//当鼠标划出机柜，隐藏信息面板
+room.onMouseOutCabinet = () => {
+    setVisible('none')
+}
+5.3 机房状态管理模块
+机房状态管理模块根据用户角色展示不同的页面和操作选项，管理员权限登录时展示服务器对应的详细信息和工作状态，并提供修改服务器状态的按钮。修改状态时填写字段有相应的字段限制，点击update按钮后前端向后端发起包含修改操作的请求，后端根据请求修改数据库中保存的服务器状态等信息，然后返回相应结果，成功则提示update成功并更新服务器信息，否则提示update错误，页面效果如图5-4所示：
+ 
+图5-4 机房状态管理模块管理员视角
+更新服务器状态的关键代码如下：
+
+普通用户权限登录时展示服务器对应的详细信息和工作状态，只提供发起报错请求的选项，不提供修改服务器状态的操作。有用户对服务器发起错误请求时该服务器对与所有用户都不能再提起请求，并在FixInfo字段中可以查看提交的错误类型和错误具体内容。页面效果如图5-5所示：
+ 
+图5-5 机房状态管理模块普通用户视角
+本页面提供选择全部服务器、含有报错请求的服务器以及工作状态不正常的服务器筛选按钮，其主要实现代码如下：
+5.4 报修信息管理模块
+报修信息管理页面仅对管理员可见，当有普通用户对某台服务器发起报修请求时，系统将自动在报修信息表中新增下一条报修信息，包含发送者、发起时间、错误类型以及错误详细内容的记录。
+当管理员在系统中发现有服务器含有报错信息时，可以先更改服务器状态为False，处理完错误之后，重新修改为True，此时系统将在报错信息表的记录中补全修复管理员的用户名、修复日期等。
+页面效果如图5-6所示：
+ 
+图5-6 报错信息管理界面
+系统自动新增报错记录的关键代码如下：
+管理员修复后系统自动补全报错记录的关键代码如下：
+5.5 用户管理模块
+用户管理页面仅对管理员可见，展示所有用户的用户信息，包括ID、用户名、手机号、电子邮件地址以及用户的角色。
+页面效果如图5-7所示：
+ 
+图5-7 用户管理界面
+查询所有用户信息的关键代码如下：
+@GetMapping("/all")
+public Result<List<User>> getAll() {
+    List<User> list = userService.list();
+    return Result.success(list);
+}
+5.6 个人资料模块
+个人资料页面展示当前用户的所有信息，同时提供修改个人资料的按钮，以及退出账号按钮。
+页面效果如图5-7所示：
+ 
+图5-8 个人资料界面
+个人资料展示、修改功能实现的关键代码如下：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

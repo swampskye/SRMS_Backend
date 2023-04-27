@@ -110,11 +110,6 @@ public class ServerController {
 
     @PutMapping("/upfixid")
     public Result<?> updateFixId(@RequestBody Map map) {
-//        Server server = new Server();
-//        server.setFixId(map.get("fixId").toString());
-//        server.setServerIndex(map.get("serverIndex").toString());
-//        log.debug("@@@@@@@@@@@@@@@@@@@:"+server.toString());
-//        boolean updated = serverService.update(server);
         boolean updated = serverService.updateFix(map.get("fixId").toString(), map.get("serverIndex").toString());
         if (updated) {
             return Result.success("server fix info updated successfully");

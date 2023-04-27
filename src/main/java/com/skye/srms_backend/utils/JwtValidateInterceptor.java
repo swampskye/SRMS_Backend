@@ -18,7 +18,6 @@ public class JwtValidateInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug(request.getRequestURL()+" --------------need check");
-//        String token = request.getHeader("token");
         String token = request.getHeader("token");
         log.debug("-**************************token:"+token);
         if (token != null){

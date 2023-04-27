@@ -124,6 +124,13 @@ public class ServerServiceImpl extends ServiceImpl<ServerMapper, Server> impleme
         // 1. set fixId filed in server to null
         // 2. set fixer filed in fixInfo to username
         // 3. set fixDate filed in fixInfo to now
+
+
+        /**
+         *1. set fixId filed in server to null
+         *2. set fixer filed in fixInfo to username
+         *3. set fixDate filed in fixInfo to now
+         */
         if (server.getIsWorking()){
             FixInfo fixInfo = new FixInfo();
             fixInfo.setId(server.getFixId());

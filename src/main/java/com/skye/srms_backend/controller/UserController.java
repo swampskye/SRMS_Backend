@@ -53,7 +53,6 @@ public class UserController {
             return Result.fail(failedMsg);
         }
         boolean b = userService.addUser(user);
-
         if (b){
             return Result.success("sign up successfully");
         }
